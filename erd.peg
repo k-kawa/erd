@@ -1,0 +1,59 @@
+package main
+
+type Parser Peg {
+     Tables []Table
+     table *Table
+     column *Column
+}
+
+root <- (sep* table_def)* sep* EOT
+
+sep <- " " / [\n]
+
+table_def <- table_name sep+ table_lb sep+ columns sep* table_rb
+
+table_lb <- '{' 
+
+table_rb <- '}' {
+    p.Tables = append(p.Tables, *p.table)
+}
+
+table_name <- <[a-zA-Z_]+> {
+    p.table = &Table{
+    Name: text,
+	       Columns: make([]Column, 0),
+	   }
+}
+
+columns <- column (sep* column)*
+
+column <- (column_name_with_relation / column_name_only) {
+    p.table.Columns = append(p.table.Columns, *p.column)
+}
+
+dot <- "."
+
+column_name_with_relation <- column_name sep rarrow sep target_table_name dot target_column_name
+
+column_name_only <- column_name
+
+column_name <- <[a-zA-Z_]+> {
+	p.column = &Column{
+	  Name: text,
+	}
+}
+
+
+rarrow <- "->"
+
+target_table_name <- <[a-zA-Z_]+> {
+    p.column.Relation = &Relation{
+        TableName: text,
+    }
+}
+
+target_column_name <- <[a-zA-Z_]+> {
+    p.column.Relation.ColumnName = text
+}
+
+EOT <- !.
