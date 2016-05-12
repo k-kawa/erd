@@ -7,9 +7,28 @@ import (
 	"io/ioutil"
 )
 
+type LineType int
+
+const (
+	_ LineType = iota
+	NormalLine
+	DotLine
+)
+
 type Relation struct {
+	LineType LineType
 	TableName  string
 	ColumnName string
+}
+
+func (r Relation) LineStyleLiteral() string {
+	switch r.LineType {
+	case NormalLine:
+		return "solid"
+	case DotLine:
+		return "dotted"
+	}
+	return "solid"
 }
 
 type Column struct {
@@ -87,7 +106,7 @@ digraph er {
 
 {{range $table := .Tables}}
 {{range $column := $table.ColumnsWithRelation}}
-{{$table.Name}}:{{$column.Name}} -> {{$column.Relation.TableName}}:{{$column.Relation.ColumnName}};
+{{$table.Name}}:{{$column.Name}} -> {{$column.Relation.TableName}}:{{$column.Relation.ColumnName}} [style="{{$column.Relation.LineStyleLiteral}}"];
 {{end}}
 {{end}}
 }

@@ -43,13 +43,22 @@ column_name <- <[a-zA-Z_]+> {
 	}
 }
 
+rarrow <- rdotarrow / rlinearrow
 
-rarrow <- "->"
+rdotarrow <- "..>" {
+    p.column.Relation = &Relation{
+        LineType: DotLine,
+    }
+}
+
+rlinearrow <- "->" {
+    p.column.Relation = &Relation{
+        LineType: NormalLine,
+    }
+}
 
 target_table_name <- <[a-zA-Z_]+> {
-    p.column.Relation = &Relation{
-        TableName: text,
-    }
+    p.column.Relation.TableName = text
 }
 
 target_column_name <- <[a-zA-Z_]+> {

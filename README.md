@@ -34,7 +34,7 @@ You can write the table definitions with your favorite editor like this
     Category {
       id
       name
-      parent_category_id -> Category.id
+      parent_category_id ..> Category.id
       blog_id -> Blog.id
     }
 
@@ -92,6 +92,11 @@ Then, you can convert it to the Graphviz Dot format with `erd` command like this
     </TABLE>
     >];
 
+    Post:blog_id -> Blog:id [style="solid"];
+    Post:category_id -> Category:id [style="solid"];
+    Blog:user_id -> User:id [style="solid"];
+    Category:parent_category_id -> Category:id [style="dotted"];
+    Category:blog_id -> Blog:id [style="solid"];
 
 Finally you can convert it to a PNG image with `dot` command like this.
 
