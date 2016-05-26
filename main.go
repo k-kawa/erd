@@ -35,6 +35,7 @@ type Column struct {
 	Name     string
 	Relation *Relation
 	Description string
+	Type string
 }
 
 type Table struct {
@@ -94,13 +95,12 @@ digraph er {
 	splines=true;
 	sep="+30,30";
 	node [shape=plaintext];
-	edge [fontsize=7];
 {{range .Tables}}
 {{.Name}}[label=<
 <TABLE STYLE="RADIAL" BORDER="1" CELLBORDER="0" CELLSPACING="1" ROWS="*">
   <TR><TD><B>{{.Name}}</B>{{if .Description}}<br />{{.Description}}{{end}}</TD></TR>
   {{range .Columns}}
-    <TR><TD PORT="{{.Name}}" ALIGN="LEFT"><B>{{.Name}}</B> {{.Description}}</TD></TR>
+    <TR><TD PORT="{{.Name}}" ALIGN="LEFT"><B>{{.Name}}</B> {{if .Type }}<I>{{.Type}}</I>{{end}} {{.Description}}</TD></TR>
   {{end}}
 </TABLE>
 >];

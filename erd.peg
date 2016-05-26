@@ -8,20 +8,20 @@ type Parser Peg {
      column *Column
 }
 
-root <- (sep* table_def)* sep* EOT
+root <- (Sep* TableDef)* Sep* EOT
 
-sep <- [\n\t ]
-spaces <- " "+
+Sep <- [\n\t ]+
+Space <- " "
 
-table_def <- table_name sep (":" spaces* table_description spaces*)? table_lb sep+ columns sep+ table_rb
+TableDef <- TableName Sep (":" Space* TableDescription)? LeftBrace Sep Columns Sep RightBrace
 
-table_lb <- '{' 
+LeftBrace <- "{"
 
-table_rb <- '}' {
+RightBrace <- "}" {
     p.Tables = append(p.Tables, *p.table)
 }
 
-table_name <- <[a-zA-Z_]+> {
+TableName <- <[a-zA-Z_]+> {
     p.table = &Table{
         Name: text,
         Columns: make([]Column, 0),
@@ -29,52 +29,57 @@ table_name <- <[a-zA-Z_]+> {
 	   }
 }
 
-table_description <- <[^\n{]+> {
+TableDescription <- <[^\n{]+> {
     p.table.Description = strings.TrimSpace(text)
 }
 
-columns <- column (sep* column)*
+Columns <- Column (Sep Column)*
 
-column <- (column_name_with_relation / column_name_only) ( spaces* ":" spaces* column_description)? {
+Column <- ColumnDef Space* (RightArrow Sep TargetTableName dot TargetColumnName Space*)?  ( ":" Space* ColumnDescription)? {
     p.table.Columns = append(p.table.Columns, *p.column)
 }
 
-column_description <- <[^\n]+> {
+ColumnDescription <- <[^\n]+> {
     p.column.Description = strings.TrimSpace(text)
 }
 
 dot <- "."
 
-column_name_with_relation <- column_name sep rarrow sep target_table_name dot target_column_name
-
-column_name_only <- column_name
-
-column_name <- <[a-zA-Z_]+> {
+ColumnName <- <[a-zA-Z_]+> {
 	p.column = &Column{
 	  Name: text,
 	}
 }
 
-rarrow <- rdotarrow / rlinearrow
+ColumnDef <- ColumnName (Space* ColumnType)?
 
-rdotarrow <- "..>" {
+RightArrow <- RightDotArrow / RightLineArrow
+
+ColumnType <- <[^-:.\n]+> {
+    p.column.Type = strings.TrimSpace(text)
+}
+
+
+
+RightDotArrow <- "..>" {
     p.column.Relation = &Relation{
         LineType: DotLine,
     }
 }
 
-rlinearrow <- "->" {
+RightLineArrow <- "->" {
     p.column.Relation = &Relation{
         LineType: NormalLine,
     }
 }
 
-target_table_name <- <[a-zA-Z_]+> {
+TargetTableName <- <[a-zA-Z_]+> {
     p.column.Relation.TableName = text
 }
 
-target_column_name <- <[a-zA-Z_]+> {
+TargetColumnName <- <[a-zA-Z_]+> {
     p.column.Relation.ColumnName = text
 }
+
 
 EOT <- !.
