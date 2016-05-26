@@ -16,7 +16,7 @@ You can write the table definitions with your favorite editor like this
 
     User : All our customers {
       id
-      email : User's email address
+      email varchar(128) : User's email address
       name : User's name
     }
     
