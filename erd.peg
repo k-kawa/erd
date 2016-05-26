@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 type Parser Peg {
      Tables []Table
      table *Table
@@ -11,7 +13,7 @@ root <- (sep* table_def)* sep* EOT
 sep <- [\n\t ]
 spaces <- " "+
 
-table_def <- table_name sep+ table_lb sep+ columns sep+ table_rb
+table_def <- table_name sep (":" spaces* table_description spaces*)? table_lb sep+ columns sep+ table_rb
 
 table_lb <- '{' 
 
@@ -21,9 +23,14 @@ table_rb <- '}' {
 
 table_name <- <[a-zA-Z_]+> {
     p.table = &Table{
-    Name: text,
-	       Columns: make([]Column, 0),
+        Name: text,
+        Columns: make([]Column, 0),
+        Description: "",
 	   }
+}
+
+table_description <- <[^\n{]+> {
+    p.table.Description = strings.TrimSpace(text)
 }
 
 columns <- column (sep* column)*
@@ -33,7 +40,7 @@ column <- (column_name_with_relation / column_name_only) ( spaces* ":" spaces* c
 }
 
 column_description <- <[^\n]+> {
-    p.column.Description = text
+    p.column.Description = strings.TrimSpace(text)
 }
 
 dot <- "."

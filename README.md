@@ -11,7 +11,7 @@ The compiler of the *simplest* DSL to draw ER diagrams. This project is still un
 
 You can write the table definitions with your favorite editor like this
 
-    User {
+    User : All our customers {
       id
       email : User's email address
       name : User's name

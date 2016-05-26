@@ -1,4 +1,4 @@
-User {
+User : All our customers {
   id
   email : User's email address
   name : user's name

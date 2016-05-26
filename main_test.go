@@ -101,7 +101,7 @@ users {
 		So(parser.Tables[0].Columns[1].Description, ShouldEqual, "User of the device.")
 	})
 
-	Convey("Column Description with Relation", t, func() {
+	Convey("Column Description", t, func() {
 		err, parser := parse(t, `
 devices {
   id
@@ -111,5 +111,17 @@ devices {
 		So(err, ShouldBeNil)
 		So(len(parser.Tables), ShouldEqual, 1)
 		So(parser.Tables[0].Columns[2].Description, ShouldEqual, "User unique token.")
+	})
+
+	Convey("Table Description", t, func() {
+		err, parser := parse(t, `
+devices : devices including iOS/Android {
+  id
+  user_id
+  token
+}`)
+		So(err, ShouldBeNil)
+		So(len(parser.Tables), ShouldEqual, 1)
+		So(parser.Tables[0].Description, ShouldEqual, "devices including iOS/Android")
 	})
 }

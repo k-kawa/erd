@@ -39,6 +39,7 @@ type Column struct {
 
 type Table struct {
 	Name    string
+	Description string
 	Columns []Column
 }
 
@@ -97,7 +98,7 @@ digraph er {
 {{range .Tables}}
 {{.Name}}[label=<
 <TABLE STYLE="RADIAL" BORDER="1" CELLBORDER="0" CELLSPACING="1" ROWS="*">
-  <TR><TD><B>{{.Name}}</B></TD></TR>
+  <TR><TD><B>{{.Name}}</B>{{if .Description}}<br />{{.Description}}{{end}}</TD></TR>
   {{range .Columns}}
     <TR><TD PORT="{{.Name}}" ALIGN="LEFT"><B>{{.Name}}</B> {{.Description}}</TD></TR>
   {{end}}
