@@ -39,18 +39,18 @@ You can write the table definitions with your favorite editor like this
     }
 
     
-and store it to `erd.src`.
+and store it to `sample.src`.
  
 Then, you can convert it to the Graphviz Dot format with `erd` command like this.
 
-    $ cat erd.src | erd
+    $ cat sample.src | erd
     digraph er {
         ....
     }
 
 Finally you can convert it to a PNG image with `dot` command like this.
 
-    $ cat erd.src | erd | dot -Tpng -o erd.png
+    $ cat sample.src | erd | dot -Tpng -o erd.png
 
 ![erd.png](./erd.png)
 
