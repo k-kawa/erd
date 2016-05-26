@@ -1,0 +1,26 @@
+User {
+  id
+  email : User's email address
+  name : user's name
+}
+
+Post {
+  id
+  blog_id -> Blog.id
+  category_id -> Category.id
+  title : title of the blog post
+  text : plain text content of the blog post
+}
+    
+Blog {
+  id
+  user_id -> User.id
+  name
+}
+    
+Category {
+  id
+  name
+  parent_category_id ..> Category.id
+  blog_id -> Blog.id
+}

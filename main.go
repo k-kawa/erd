@@ -34,6 +34,7 @@ func (r Relation) LineStyleLiteral() string {
 type Column struct {
 	Name     string
 	Relation *Relation
+	Description string
 }
 
 type Table struct {
@@ -98,7 +99,7 @@ digraph er {
 <TABLE STYLE="RADIAL" BORDER="1" CELLBORDER="0" CELLSPACING="1" ROWS="*">
   <TR><TD><B>{{.Name}}</B></TD></TR>
   {{range .Columns}}
-    <TR><TD PORT="{{.Name}}">{{.Name}}</TD></TR>
+    <TR><TD PORT="{{.Name}}" ALIGN="LEFT"><B>{{.Name}}</B> {{.Description}}</TD></TR>
   {{end}}
 </TABLE>
 >];
