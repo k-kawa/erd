@@ -4,8 +4,11 @@ The compiler of the *simplest* DSL to draw ER diagrams. This project is still un
 
 ## Install
 
+Execute the following command to install the latest version.
+
     go get github.com/k-kawa/erd
 
+Or [download](https://github.com/k-kawa/erd/releases) the executable binary suitable for your environment
 
 ## Usage
 
