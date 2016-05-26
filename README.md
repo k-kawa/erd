@@ -53,3 +53,6 @@ Finally you can convert it to a PNG image with `dot` command like this.
     $ cat erd.src | erd | dot -Tpng -o erd.png
 
 ![erd.png](./erd.png)
+
+## License
+MIT
