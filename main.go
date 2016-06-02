@@ -1,14 +1,14 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
 	"text/template"
-	"log"
-	"io/ioutil"
 
+	"encoding/json"
 	"github.com/urfave/cli"
 	"io"
-	"encoding/json"
 )
 
 type LineType int
@@ -20,7 +20,7 @@ const (
 )
 
 type Relation struct {
-	LineType LineType
+	LineType   LineType
 	TableName  string
 	ColumnName string
 }
@@ -36,20 +36,20 @@ func (r Relation) LineStyleLiteral() string {
 }
 
 type Column struct {
-	Name     string
-	Relation *Relation
+	Name        string
+	Relation    *Relation
 	Description string
-	Type string
+	Type        string
 }
 
 type Table struct {
-	Name    string
+	Name        string
 	Description string
-	Columns []Column
+	Columns     []Column
 }
 
 func (t Table) ColumnsWithRelation() []Column {
-	ret := make([]Column, 0)
+	var ret []Column
 	for _, c := range t.Columns {
 		if c.Relation != nil {
 			ret = append(ret, c)
@@ -113,7 +113,7 @@ digraph er {
 	return nil
 }
 
-func ExportJson(p ParsedData, wr io.Writer) error {
+func ExportJSON(p ParsedData, wr io.Writer) error {
 	data, err := json.Marshal(p.Tables())
 	if err != nil {
 		return err
@@ -133,12 +133,12 @@ func main() {
 	app.Version = "0.0.1"
 	app.Commands = []cli.Command{
 		{
-			Name: "convert",
+			Name:    "convert",
 			Aliases: []string{"c"},
-			Usage: "convert erd file to dot/json",
-			Flags: []cli.Flag {
+			Usage:   "convert erd file to dot/json",
+			Flags: []cli.Flag{
 				cli.StringFlag{
-					Name: "outformat",
+					Name:  "outformat",
 					Value: "dot",
 					Usage: "output format. dot and json is available.",
 				},
@@ -146,9 +146,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				text := ReadStdin()
 
-				parser := &Parser{Buffer: text}  // 解析対象文字の設定
-				parser.Init()                 // parser初期化
-				err := parser.Parse()         // 解析
+				parser := &Parser{Buffer: text} // 解析対象文字の設定
+				parser.Init()                   // parser初期化
+				err := parser.Parse()           // 解析
 				if err != nil {
 					return cli.NewExitError(err.Error(), 1)
 				}
@@ -157,7 +157,7 @@ func main() {
 
 				outFormat := c.String("outformat")
 				if outFormat == "json" {
-					err = ExportJson(parser, os.Stdout)
+					err = ExportJSON(parser, os.Stdout)
 				} else {
 					err = ExportDot(parser, os.Stdout)
 				}
