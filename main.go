@@ -5,6 +5,10 @@ import (
 	"text/template"
 	"log"
 	"io/ioutil"
+
+	"github.com/urfave/cli"
+	"io"
+	"encoding/json"
 )
 
 type LineType int
@@ -62,31 +66,15 @@ func ReadStdin() string {
 	return string(buf)
 }
 
-func main() {
-	//const s string = `
-	//this {
-	//id
-	//that -> that.id
-	//}
-	//
-	//that {
-	//id
-	//name
-	//}
-	//`  // 解析対象文字列
-	c := ReadStdin()
+type ParsedData interface {
+	Tables() []Table
+}
 
-	parser := &Parser{Buffer: c}  // 解析対象文字の設定
-	parser.Init()                 // parser初期化
-	err := parser.Parse()         // 解析
-	if err != nil {
-		log.Fatal(err.Error())
-	} else {
-		parser.Execute()          // アクション処理
-	}
+func (p Parser) Tables() []Table {
+	return p.tables
+}
 
-	////{{.Name}}[label="<B>{{.Name}}</B>{{range .Columns}}|<{{.Name}}>{{.Name}}{{end}}"];
-
+func ExportDot(p ParsedData, wr io.Writer) error {
 	tmpl, err := template.New("test").Parse(`
 digraph er {
 	graph [rankdir=LR];
@@ -114,11 +102,72 @@ digraph er {
 }
 		`)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return err
 	}
 
-	err = tmpl.Execute(os.Stdout, parser)
+	err = tmpl.Execute(os.Stdout, p)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return err
 	}
+
+	return nil
+}
+
+func ExportJson(p ParsedData, wr io.Writer) error {
+	data, err := json.Marshal(p.Tables())
+	if err != nil {
+		return err
+	}
+
+	if _, err := wr.Write(data); err != nil {
+		return err
+	}
+	return nil
+}
+
+func main() {
+
+	app := cli.NewApp()
+	app.Name = "erd"
+	app.Usage = "Yet another ER Diagram Maker"
+	app.Version = "0.0.1"
+	app.Commands = []cli.Command{
+		{
+			Name: "convert",
+			Aliases: []string{"c"},
+			Usage: "convert erd file to dot/json",
+			Flags: []cli.Flag {
+				cli.StringFlag{
+					Name: "outformat",
+					Value: "dot",
+					Usage: "output format. dot and json is available.",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				text := ReadStdin()
+
+				parser := &Parser{Buffer: text}  // 解析対象文字の設定
+				parser.Init()                 // parser初期化
+				err := parser.Parse()         // 解析
+				if err != nil {
+					return cli.NewExitError(err.Error(), 1)
+				}
+
+				parser.Execute()
+
+				outFormat := c.String("outformat")
+				if outFormat == "json" {
+					err = ExportJson(parser, os.Stdout)
+				} else {
+					err = ExportDot(parser, os.Stdout)
+				}
+				if err != nil {
+					return cli.NewExitError(err.Error(), 1)
+				}
+				return nil
+			},
+		},
+	}
+
+	app.Run(os.Args)
 }

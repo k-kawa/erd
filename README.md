@@ -46,14 +46,14 @@ and store it to `sample.erd`.
  
 Then, you can convert it to the Graphviz Dot format with `erd` command like this.
 
-    $ cat sample.erd | erd
+    $ cat sample.erd | erd convert
     digraph er {
         ....
     }
 
 Finally you can convert it to a PNG image with `dot` command like this.
 
-    $ cat sample.erd | erd | dot -Tpng -o sample.png
+    $ cat sample.erd | erd convert | dot -Tpng -o sample.png
 
 ![sample.png](./sample.png)
 

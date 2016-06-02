@@ -405,7 +405,7 @@ func (t *tokens32) Expand(index int) tokenTree {
 }
 
 type Parser struct {
-	Tables []Table
+	tables []Table
 	table  *Table
 	column *Column
 
@@ -497,7 +497,7 @@ func (p *Parser) Execute() {
 
 		case ruleAction0:
 
-			p.Tables = append(p.Tables, *p.table)
+			p.tables = append(p.tables, *p.table)
 
 		case ruleAction1:
 
@@ -1659,7 +1659,7 @@ func (p *Parser) Init() {
 			return false
 		},
 		/* 22 Action0 <- <{
-		    p.Tables = append(p.Tables, *p.table)
+		    p.tables = append(p.tables, *p.table)
 		}> */
 		func() bool {
 			{

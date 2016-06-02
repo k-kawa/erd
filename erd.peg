@@ -3,7 +3,7 @@ package main
 import "strings"
 
 type Parser Peg {
-     Tables []Table
+     tables []Table
      table *Table
      column *Column
 }
@@ -18,7 +18,7 @@ TableDef <- TableName Sep (":" Space* TableDescription)? LeftBrace Sep Columns S
 LeftBrace <- "{"
 
 RightBrace <- "}" {
-    p.Tables = append(p.Tables, *p.table)
+    p.tables = append(p.tables, *p.table)
 }
 
 TableName <- <[a-zA-Z_]+> {
