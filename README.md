@@ -10,9 +10,9 @@ Execute the following command to install the latest version.
 
 Or [download](https://github.com/k-kawa/erd/releases) the executable binary suitable for your environment
 
-## Usage
+## How to use
 
-You can write the table definitions with your favorite editor like this
+First, You can write the table definitions with your favorite editor like this
 
     User : All our customers {
       id
@@ -20,6 +20,7 @@ You can write the table definitions with your favorite editor like this
       name : User's name
     }
     
+    # The lines starting with # are comment and ignored.
     Post {
       id
       blog_id -> Blog.id
@@ -44,7 +45,7 @@ You can write the table definitions with your favorite editor like this
     
 and store it to `sample.erd`.
  
-Then, you can convert it to the Graphviz Dot format with `erd` command like this.
+Then you can convert it to the Graphviz Dot format with `erd` command like this.
 
     $ cat sample.erd | erd convert
     digraph er {
@@ -56,6 +57,48 @@ Finally you can convert it to a PNG image with `dot` command like this.
     $ cat sample.erd | erd convert | dot -Tpng -o sample.png
 
 ![sample.png](./sample.png)
+
+You can also export the data in JSON format by specifying `--outformat json` option
+
+    $ cat sample.erd | erd convert --outformat json | json_pp
+    [
+       {
+          "Name" : "User",
+          "Description" : "All our customers",
+          "Columns" : [
+             {
+                "Relation" : null,
+                "Name" : "id",
+                "Description" : "",
+                "Type" : ""
+             },
+             {
+                "Relation" : null,
+                "Name" : "email",
+                "Type" : "varchar(128)",
+                "Description" : "User's email address"
+             },
+             {
+                "Description" : "user's name",
+                "Type" : "",
+                "Relation" : null,
+                "Name" : "name"
+             }
+          ]
+       },
+       {
+          "Name" : "Post",
+          "Description" : "",
+          "Columns" : [
+             {
+                "Description" : "",
+                "Type" : "",
+                "Name" : "id",
+                "Relation" : null
+             },
+             {
+                "Relation" : {
+    ....
 
 ## License
 MIT
