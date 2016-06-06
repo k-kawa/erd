@@ -39,8 +39,8 @@ devices {
   token
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(len(parser.Tables[0].Columns), ShouldEqual, 3)
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(len(parser.Tables()[0].Columns), ShouldEqual, 3)
 	})
 
 	Convey("Simplest Relation", t, func() {
@@ -56,10 +56,10 @@ users {
   name
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 2)
-		So(parser.Tables[0].Columns[1].Relation.TableName, ShouldEqual, "users")
-		So(parser.Tables[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
-		So(parser.Tables[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+		So(len(parser.Tables()), ShouldEqual, 2)
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
 	})
 
 	Convey("Dotted Relation", t, func() {
@@ -75,10 +75,10 @@ users {
   name
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 2)
-		So(parser.Tables[0].Columns[1].Relation.TableName, ShouldEqual, "users")
-		So(parser.Tables[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
-		So(parser.Tables[0].Columns[1].Relation.LineType, ShouldEqual, DotLine)
+		So(len(parser.Tables()), ShouldEqual, 2)
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, DotLine)
 	})
 
 	Convey("Column Description with Relation", t, func() {
@@ -94,11 +94,11 @@ users {
   name
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 2)
-		So(parser.Tables[0].Columns[1].Relation.TableName, ShouldEqual, "users")
-		So(parser.Tables[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
-		So(parser.Tables[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
-		So(parser.Tables[0].Columns[1].Description, ShouldEqual, "User of the device.")
+		So(len(parser.Tables()), ShouldEqual, 2)
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+		So(parser.Tables()[0].Columns[1].Description, ShouldEqual, "User of the device.")
 	})
 
 	Convey("Column Description", t, func() {
@@ -109,8 +109,8 @@ devices {
   token : User unique token.
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(parser.Tables[0].Columns[2].Description, ShouldEqual, "User unique token.")
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[2].Description, ShouldEqual, "User unique token.")
 	})
 
 	Convey("Table Description", t, func() {
@@ -121,8 +121,8 @@ devices : devices including iOS/Android {
   token
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(parser.Tables[0].Description, ShouldEqual, "devices including iOS/Android")
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Description, ShouldEqual, "devices including iOS/Android")
 	})
 
 	Convey("Column Type", t, func() {
@@ -133,8 +133,8 @@ devices : devices including iOS/Android {
   token
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(parser.Tables[0].Columns[1].Type, ShouldEqual, "BIGINT")
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[1].Type, ShouldEqual, "BIGINT")
 	})
 
 	Convey("Column Type with relation", t, func() {
@@ -145,11 +145,11 @@ devices : devices including iOS/Android {
   token
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(parser.Tables[0].Columns[1].Type, ShouldEqual, "BIGINT")
-		So(parser.Tables[0].Columns[1].Relation.TableName, ShouldEqual, "users")
-		So(parser.Tables[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
-		So(parser.Tables[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[1].Type, ShouldEqual, "BIGINT")
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
 	})
 
 	Convey("Column Type with relation and description", t, func() {
@@ -160,11 +160,65 @@ devices : devices including iOS/Android {
   token
 }`)
 		So(err, ShouldBeNil)
-		So(len(parser.Tables), ShouldEqual, 1)
-		So(parser.Tables[0].Columns[1].Description, ShouldEqual, "The relation")
-		So(parser.Tables[0].Columns[1].Type, ShouldEqual, "BIGINT")
-		So(parser.Tables[0].Columns[1].Relation.TableName, ShouldEqual, "users")
-		So(parser.Tables[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
-		So(parser.Tables[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[1].Description, ShouldEqual, "The relation")
+		So(parser.Tables()[0].Columns[1].Type, ShouldEqual, "BIGINT")
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+	})
+
+	Convey("Comment in the table definition.", t, func() {
+		err, parser := parse(t, `
+devices : devices including iOS/Android {
+# Ignore me
+  id
+  user_id BIGINT -> users.id : The relation
+  token
+}`)
+		So(err, ShouldBeNil)
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[1].Description, ShouldEqual, "The relation")
+		So(parser.Tables()[0].Columns[1].Type, ShouldEqual, "BIGINT")
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+	})
+
+	Convey("Comment between the table definitions.", t, func() {
+		err, parser := parse(t, `
+devices : devices including iOS/Android {
+  id
+  user_id BIGINT -> users.id : The relation
+  token
+}
+# Ignore me
+
+devices : devices including iOS/Android {
+  id
+  user_id BIGINT -> users.id : The relation
+  token
+}
+`)
+		So(err, ShouldBeNil)
+		So(len(parser.Tables()), ShouldEqual, 2)
+		So(parser.Tables()[0].Columns[1].Description, ShouldEqual, "The relation")
+		So(parser.Tables()[0].Columns[1].Type, ShouldEqual, "BIGINT")
+		So(parser.Tables()[0].Columns[1].Relation.TableName, ShouldEqual, "users")
+		So(parser.Tables()[0].Columns[1].Relation.ColumnName, ShouldEqual, "id")
+		So(parser.Tables()[0].Columns[1].Relation.LineType, ShouldEqual, NormalLine)
+	})
+
+	Convey("Comment between the table definitions.", t, func() {
+		err, parser := parse(t, `
+devices : devices including iOS/Android {
+  id # this is not comment
+  user_id BIGINT -> users.id : The relation
+  token
+}
+`)
+		So(err, ShouldBeNil)
+		So(len(parser.Tables()), ShouldEqual, 1)
+		So(parser.Tables()[0].Columns[0].Type, ShouldEqual, "# this is not comment")
 	})
 }

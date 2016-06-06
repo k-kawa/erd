@@ -10,10 +10,12 @@ type Parser Peg {
 
 root <- (Sep* TableDef)* Sep* EOT
 
-Sep <- [\n\t ]+
+Comment <- "\n#" [^\n]+ "\n"
+
+Sep <- Comment / [\n\t ]
 Space <- " "
 
-TableDef <- TableName Sep (":" Space* TableDescription)? LeftBrace Sep Columns Sep RightBrace
+TableDef <- TableName Sep+ (":" Space* TableDescription)? LeftBrace Sep+ Columns Sep+ RightBrace
 
 LeftBrace <- "{"
 
@@ -33,9 +35,9 @@ TableDescription <- <[^\n{]+> {
     p.table.Description = strings.TrimSpace(text)
 }
 
-Columns <- Column (Sep Column)*
+Columns <- Column (Sep+ Column)*
 
-Column <- ColumnDef Space* (RightArrow Sep TargetTableName dot TargetColumnName Space*)?  ( ":" Space* ColumnDescription)? {
+Column <- ColumnDef Space* (RightArrow Sep+ TargetTableName dot TargetColumnName Space*)?  ( ":" Space* ColumnDescription)? {
     p.table.Columns = append(p.table.Columns, *p.column)
 }
 
