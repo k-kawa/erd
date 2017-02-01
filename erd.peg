@@ -23,7 +23,7 @@ RightBrace <- "}" {
     p.tables = append(p.tables, *p.table)
 }
 
-TableName <- <[a-zA-Z_]+> {
+TableName <- <[a-zA-Z0-9_]+> {
     p.table = &Table{
         Name: text,
         Columns: make([]Column, 0),
@@ -47,7 +47,7 @@ ColumnDescription <- <[^\n]+> {
 
 dot <- "."
 
-ColumnName <- <[a-zA-Z_]+> {
+ColumnName <- <[a-zA-Z0-9_]+> {
 	p.column = &Column{
 	  Name: text,
 	}
@@ -75,11 +75,11 @@ RightLineArrow <- "->" {
     }
 }
 
-TargetTableName <- <[a-zA-Z_]+> {
+TargetTableName <- <[a-zA-Z0-9_]+> {
     p.column.Relation.TableName = text
 }
 
-TargetColumnName <- <[a-zA-Z_]+> {
+TargetColumnName <- <[a-zA-Z0-9_]+> {
     p.column.Relation.ColumnName = text
 }
 
